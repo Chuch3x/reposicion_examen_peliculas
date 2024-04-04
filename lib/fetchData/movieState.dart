@@ -9,7 +9,7 @@ class MovieWaiting extends MovieState {}
 class MovieLoaded extends MovieState {
   final List<Movie> movies;
 
-  MovieLoaded(this.movies);
+  MovieLoaded({required this.movies});
 
   @override
   List<Object> get props => [movies];
@@ -18,7 +18,7 @@ class MovieLoaded extends MovieState {
 class MovieFailed extends MovieState {
   final String message;
 
-  MovieFailed(this.message);
+  MovieFailed({required this.message});
 
   @override
   List<Object> get props => [message];

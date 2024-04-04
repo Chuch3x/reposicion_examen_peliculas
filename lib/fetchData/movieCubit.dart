@@ -9,18 +9,16 @@ class MovieCubit extends Cubit<MovieState> {
   }
 
   void fetchMovies() async {
-    final dio = Dio();
-    final response =
-        await dio.get('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fa3e844ce31744388e07fa47c7c5d8c3');
-    if (response.statusCode == 200) {
-      List<Movie> MovieFromJson(List<dynamic> lst) {
-        return List<Movie>.from(lst.map((x) => Movie.fromJson(x))).toList();
-      }
-
-      List<Movie> finalData = MovieFromJson(response.data);
-      emit(MovieLoaded(finalData));
-    } else {
-      emit(MovieFailed("No se cargaron las pelis"));
-    }
+  final dio = Dio();
+  final response = await dio.get(
+      'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=fa3e844ce31744388e07fa47c7c5d8c3');
+  if (response.statusCode == 200 && response.data != null) {
+    List<Movie> movies = List<Movie>.from(response.data['results'].map((x) => Movie.fromJson(x)));
+    emit(MovieLoaded(movies: movies));
+  } else {
+    emit(MovieFailed(message: "No se cargaron las pelis"));
   }
 }
+
+}
+

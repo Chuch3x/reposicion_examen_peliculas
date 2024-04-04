@@ -11,46 +11,10 @@ class MovieBuilder extends StatefulWidget {
   State<MovieBuilder> createState() => _MovieBuilderState();
 }
 
-
-Widget getTextWidgets(List<Result> results) {
-  List<Widget> widgets = [];
-
-  for (var result in results) {
-    var container = Flexible(
-        child: Container(
-      color: Colors.green[100],
-      child: Text(
-        result.title,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-      ),
-    ));
-
-    widgets.add(container);
-  }
-
-  // Return a Row widget containing all the Result widgets
-  return GridView.count(
-    crossAxisSpacing: 1,
-    mainAxisSpacing: 3,
-    crossAxisCount: 3,
-    children: widgets,
-  );
-}
-
 class _MovieBuilderState extends State<MovieBuilder> {
+
   @override
   Widget build(BuildContext context) {
-    void _navigate(BuildContext context, Widget page) {
-      Future.delayed(Duration(milliseconds: 800), () {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => page,
-          ),
-        );
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text("Posts rating")),
       body: Container(
@@ -61,13 +25,40 @@ class _MovieBuilderState extends State<MovieBuilder> {
                 child: CircularProgressIndicator(),
               );
             } else if (state is MovieLoaded) {
-              return getTextWidgets(state.movies.results);
+              return ListView.builder(
+                itemCount: state.movies.length,
+                itemBuilder: (context, index) {
+                  return getTextWidgets(state.movies[index].results);
+                },
+              );
+              // debugPrint(state.movies.toString());
+              // return const Text("data");
             } else {
-              return const Text("fallido");
+              return const Text("Fallido");
             }
           },
         ),
       ),
+    );
+  }
+
+  Widget getTextWidgets(List<Result> results) {
+    return GridView.count(
+      crossAxisSpacing: 1,
+      mainAxisSpacing: 3,
+      crossAxisCount: 3,
+      children: results
+          .map(
+            (result) => Container(
+              color: Colors.green[100],
+              child: Text(
+                result.title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }
